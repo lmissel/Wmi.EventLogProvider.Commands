@@ -156,9 +156,15 @@ function Get-NTLogEvent
                    ValueFromRemainingArguments=$false, 
                    Position=0,
                    ParameterSetName='Default')]
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='RecordNumber')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        $LogFileName,
+        $LogFile,
 
         [Parameter(Mandatory=$false, 
                    ValueFromPipeline=$true,
@@ -166,14 +172,18 @@ function Get-NTLogEvent
                    ValueFromRemainingArguments=$false, 
                    Position=1,
                    ParameterSetName='Default')]
-        [ValidateNotNull()]
-        [ValidateNotNullOrEmpty()]
         [Parameter(Mandatory=$false, 
                    ValueFromPipeline=$true,
                    ValueFromPipelineByPropertyName=$true, 
                    ValueFromRemainingArguments=$false, 
                    Position=1,
-                   ParameterSetName='Query')]
+                   ParameterSetName='Filter')]
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=2,
+                   ParameterSetName='RecordNumber')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         $ComputerName = ".",
@@ -183,10 +193,20 @@ function Get-NTLogEvent
                    ValueFromPipelineByPropertyName=$true, 
                    ValueFromRemainingArguments=$false, 
                    Position=0,
-                   ParameterSetName='Query')]
+                   ParameterSetName='Filter')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        $Filter
+        $Filter,
+
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=1,
+                   ParameterSetName='RecordNumber')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $RecordNumber
     )
 
     Begin
@@ -199,14 +219,20 @@ function Get-NTLogEvent
     {
         if ($PSCmdlet.ParameterSetName -eq 'Default')
         {
-            $items = Get-WmiObject -Query "SELECT * FROM $($classname) WHERE Logfile='$($LogFileName)'" -ComputerName $ComputerName -Namespace $namespace
+            $Query = "SELECT * FROM $($classname) WHERE Logfile='$($LogFile)'"
         }
 
-        if ($PSCmdlet.ParameterSetName -eq 'Query')
+        if ($PSCmdlet.ParameterSetName -eq 'Filter')
         {
             $Query = "SELECT * FROM $($classname) WHERE $($Filter)"
-            $items = Get-WmiObject -Query $Query -ComputerName $ComputerName -Namespace $namespace
         }
+
+        if ($PSCmdlet.ParameterSetName -eq 'RecordNumber')
+        {
+            $Query = "SELECT * FROM $($classname) WHERE Logfile='$($LogFile)' AND RecordNumber=$($RecordNumber)"
+        }
+
+        $items = Get-WmiObject -Query $Query -ComputerName $ComputerName -Namespace $namespace
     }
 
     End
@@ -263,7 +289,7 @@ function Backup-NTEventLogFile
                    ParameterSetName='Default')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        $fileName
+        $destination
     )
 
     Begin
@@ -274,9 +300,12 @@ function Backup-NTEventLogFile
 
     Process
     {
-        $NTEventLogFiles = Get-WmiObject -Class $classname -Namespace $namespace -ComputerName $ComputerName | Where-Object {$_.LogFileName -eq $LogFileName}
+        $NTEventLogFiles = Get-WmiObject -Class $classname -Namespace $namespace -ComputerName $ComputerName -Filter "LogfileName = '$LogFileName'"
         foreach ($NTEventLogFile in $NTEventLogFiles)
         {
+            $filename = Join-Path -Path $destination -ChildPath "$($NTEventLogFile.LogFileName)-$((Get-Date -Format 's').Replace(':','-')).$($NTEventLogFile.Extension)"
+            Write-Debug $filename
+
             [void]$NTEventLogFile.BackupEventlog($fileName)
         }
     }

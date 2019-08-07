@@ -25,6 +25,6 @@ Get-NTEventLogFile -LogFileName "Application"
 Get-NTLogEvent -Filter {Logfile='Application' AND RecordNumber=4}
 
 # Sichere ein NTEventLogFile.
-Backup-NTEventLogFile -LogFileName Application -fileName C:\Support\Application.evtx
+Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
 
 ```

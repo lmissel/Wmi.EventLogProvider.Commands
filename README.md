@@ -1,6 +1,7 @@
-# Wmi.EventLogs.Commands
+# Wmi.EventLogProvider.Commands
 
-Dieses PowerShell Module stellt Funktionen zur Verfügung, die für die Verwaltung von EventLogs dienen.
+Dieses PowerShell Module stellt Funktionen zur Verfügung, die für die Verwaltung von EventLogs dienen. Dabei wurde bei der Entwicklung darauf geachtet, den WMI Event Log Provider zu verwenden. Weitere Informationen finden Sie unter:
+[https://docs.microsoft.com/en-us/previous-versions/windows/desktop/eventlogprov/event-log-provider](Event Log Provider)
 
 ## Voraussetzungen
 
@@ -16,7 +17,7 @@ In diesem Beispiel wird gezeigt und erläutert, wie das Module verwendet werden 
 
 ```powershell
 # Importieren des Moduls
-Import-Module Wmi.EventLogs.Commands
+Import-Module Wmi.EventLogProvider.Commands
 
 # Gebe ein Objekt der Klasse Win32_NTEventLogFile aus.
 Get-NTEventLogFile -LogFileName "Application"

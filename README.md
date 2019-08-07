@@ -30,4 +30,8 @@ Get-NTLogEvent -Filter {Logfile='Application' AND RecordNumber=4}
 # Sichere ein NTEventLogFile.
 Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
 
+# PowerShell Events erzeugen, wenn ein neues NTLogEvent erzeugt wird.
+Register-NTLogEventEventHandler
 ```
+## Hinweis
+Dieses PowerShell Module wurde bewusst kein gehalten. Sollten Sie weitere Funktionen benötigen, steht das PowerShell Module **System.Diagnostics.Commands** oder das **System.Diagnostics.Eventing.Reader** in den jeweiligen Repositories zur Verfügung.

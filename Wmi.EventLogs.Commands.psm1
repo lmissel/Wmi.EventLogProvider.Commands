@@ -3,7 +3,8 @@
 # Module: Wmi.EventLogs.Commands
 #
 # Beschreibung:
-# 
+# Dieses PowerShell Module stellt Funktionen zur Verfügung, die für die Verwaltung von
+# EventLogs dienen.
 #
 # ---------------------------------------------------------------------
 
@@ -54,6 +55,56 @@ function Get-NTEventLogFile
     End
     {
         return $items
+    }
+}
+
+# ... get all sources from event log?
+function Get-NTEventLogFileSources
+{
+    [CmdletBinding(DefaultParameterSetName='Default', 
+                  SupportsShouldProcess=$true, 
+                  PositionalBinding=$false,
+                  HelpUri = 'http://www.microsoft.com/',
+                  ConfirmImpact='Medium')]
+    [Alias()]
+    [OutputType([Object])]
+    param(
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $LogFileName,
+
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=1,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $ComputerName = "."
+    )
+    
+    Begin
+    {
+        $namespace = "ROOT\CIMV2"
+        $classname = "Win32_NTEventLogFile"
+    }
+
+    Process
+    {
+
+        $items = Get-WmiObject -Class $classname -Namespace $namespace -ComputerName $ComputerName | Where-Object {$_.LogFileName -eq $LogFileName}
+    }
+
+    End
+    {
+        return $items.Sources
     }
 }
 
@@ -138,9 +189,44 @@ function Get-NTLogEvent
 # Backup-NTEventLogFile -LogFileName Dienststeuerung -fileName C:\Support\Dienststeuerung.evtx
 function Backup-NTEventLogFile
 {
+    [CmdletBinding(DefaultParameterSetName='Default', 
+                  SupportsShouldProcess=$true, 
+                  PositionalBinding=$false,
+                  HelpUri = 'http://www.microsoft.com/',
+                  ConfirmImpact='Medium')]
+    [Alias()]
+    [OutputType([Void])]
     param(
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
         $LogFileName = 'security',
+
+
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=1,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
         $ComputerName = ".",
+
+
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=2,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
         $fileName
     )
 
@@ -167,8 +253,33 @@ function Backup-NTEventLogFile
 # ...clear my event logs?
 function Clear-NTEventLogFile
 {
+    [CmdletBinding(DefaultParameterSetName='Default', 
+                  SupportsShouldProcess=$true, 
+                  PositionalBinding=$false,
+                  HelpUri = 'http://www.microsoft.com/',
+                  ConfirmImpact='Medium')]
+    [Alias()]
+    [OutputType([Void])]
     param(
+        [Parameter(Mandatory=$true, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
         $LogFileName = 'security',
+
+
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=1,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
         $ComputerName = "."
     )
 
@@ -185,6 +296,52 @@ function Clear-NTEventLogFile
         {
             [void]$NTEventLogFile.ClearEventlog()
         }
+    }
+
+    End
+    {
+    }
+}
+
+function Register-NTLogEventEventHandler
+{
+    [CmdletBinding(DefaultParameterSetName='Default', 
+                  SupportsShouldProcess=$true, 
+                  PositionalBinding=$false,
+                  HelpUri = 'http://www.microsoft.com/',
+                  ConfirmImpact='Medium')]
+    [Alias()]
+    [OutputType([Object])]
+    param(
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=1,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        $ComputerName = ".",
+
+        [Parameter(Mandatory=$false, 
+                   ValueFromPipeline=$true,
+                   ValueFromPipelineByPropertyName=$true, 
+                   ValueFromRemainingArguments=$false, 
+                   Position=0,
+                   ParameterSetName='Default')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [ScriptBlock] $ScriptBlock = {(New-Event -SourceIdentifier "Win32_NTLogEvent" -Sender $args[0] –EventArguments $Event)}
+    )
+    
+    Begin
+    {
+    }
+    
+    Process
+    {
+        $Query = "SELECT * FROM __InstanceCreationEvent WHERE TargetInstance ISA 'Win32_NTLogEvent'"
+        Register-WmiEvent -Query $Query -SourceIdentifier "NTLogEventEventHandler" -ComputerName $ComputerName -Action $ScriptBlock
     }
 
     End

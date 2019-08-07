@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------
 #
-# Module: Wmi.EventLogs.Commands
+# Module: Wmi.EventLogProvider.Commands
 #
 # Beschreibung:
-# Dieses PowerShell Module stellt Funktionen zur Verfügung, die für die Verwaltung von
+# Dieses PowerShell Module stellt Funktionen zur VerfÃ¼gung, die fÃ¼r die Verwaltung von
 # EventLogs dienen.
 #
 # ---------------------------------------------------------------------
@@ -414,7 +414,7 @@ function Register-NTLogEventEventHandler
                    ParameterSetName='Default')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [ScriptBlock] $ScriptBlock = {(New-Event -SourceIdentifier "Win32_NTLogEvent" -Sender $args[0] –EventArguments $Event)}
+        [ScriptBlock] $ScriptBlock = {(New-Event -SourceIdentifier "Win32_NTLogEvent" -Sender $args[0] Â–EventArguments $Event)}
     )
     
     Begin

@@ -34,4 +34,4 @@ Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
 Register-NTLogEventEventHandler
 ```
 ## Hinweis
-Dieses PowerShell Module wurde bewusst kein gehalten. Sollten Sie weitere Funktionen benötigen, steht das PowerShell Module **System.Diagnostics.Commands** oder das **System.Diagnostics.Eventing.Reader** in den jeweiligen Repositories zur Verfügung.
+Dieses PowerShell Module wurde bewusst klein gehalten. Sollten Sie weitere Funktionen benötigen, steht das PowerShell Module **System.Diagnostics.Commands** oder das **System.Diagnostics.Eventing.Reader.Commands** in den jeweiligen Repositories zur Verfügung.

@@ -8,7 +8,18 @@
 #
 # ---------------------------------------------------------------------
 
-# ...retrieve information about the Security event log?
+<#
+.Synopsis
+    Get a NTEventlogFile.
+.DESCRIPTION
+    Get a NTEventlogFile.
+
+    The Win32_NTEventlogFile WMI class represents a logical file or directory of operating system events. The file is also known as the event log.
+.EXAMPLE
+    Get-NTEventLogFile -LogFileName "Application"
+.EXAMPLE
+    Get-NTEventLogFile -LogFileName "Application" -ComputerName $env:ComputerName
+#>
 function Get-NTEventLogFile
 {
     [CmdletBinding(DefaultParameterSetName='Default', 
@@ -48,8 +59,10 @@ function Get-NTEventLogFile
 
     Process
     {
-
-        $items = Get-WmiObject -Class $classname -Namespace $namespace -ComputerName $ComputerName | Where-Object {$_.LogFileName -eq $LogFileName}
+        if ($pscmdlet.ShouldProcess("$($ComputerName)", "Get a NTEventLogFile."))
+        {
+            $items = Get-WmiObject -Class $classname -Namespace $namespace -ComputerName $ComputerName | Where-Object {$_.LogFileName -eq $LogFileName}
+        }
     }
 
     End
@@ -58,7 +71,16 @@ function Get-NTEventLogFile
     }
 }
 
-# ... get all sources from event log?
+<#
+.Synopsis
+    Get all Sources of a NTEventlogFile.
+.DESCRIPTION
+    Get all Sources of a NTEventlogFile.
+.EXAMPLE
+    Get-NTEventLogFileSources -LogFileName "Application"
+.EXAMPLE
+    Get-NTEventLogFileSources -LogFileName "Application" -ComputerName $env:ComputerName
+#>
 function Get-NTEventLogFileSources
 {
     [CmdletBinding(DefaultParameterSetName='Default', 
@@ -108,8 +130,16 @@ function Get-NTEventLogFileSources
     }
 }
 
-# ...read events from the event logs?
-# Get-NTLogEvent -Filter {Logfile='Microsoft.Network.Commands'}
+<#
+.Synopsis
+    Get all NTLogEvent.
+.DESCRIPTION
+    Get all NTLogEvent.
+.EXAMPLE
+    Get-NTLogEvent -LogFileName 'Microsoft.Network.Commands' -ComputerName $env:COMPUTERNAME
+.EXAMPLE
+    Get-NTLogEvent -Filter {Logfile='Microsoft.Network.Commands' AND RecordNumber=4}
+#>
 function Get-NTLogEvent
 {
     [CmdletBinding(DefaultParameterSetName='Default', 
@@ -185,8 +215,14 @@ function Get-NTLogEvent
     }
 }
 
-# ...back up an event log?
-# Backup-NTEventLogFile -LogFileName Dienststeuerung -fileName C:\Support\Dienststeuerung.evtx
+<#
+.Synopsis
+    Backup a NTLogEventFile.
+.DESCRIPTION
+    Backup a NTLogEventFile.
+.EXAMPLE
+    Backup-NTEventLogFile -LogFileName Dienststeuerung -fileName C:\Support\Dienststeuerung.evtx
+#>
 function Backup-NTEventLogFile
 {
     [CmdletBinding(DefaultParameterSetName='Default', 
@@ -250,7 +286,14 @@ function Backup-NTEventLogFile
     }
 }
 
-# ...clear my event logs?
+<#
+.Synopsis
+    Clear a NTLogEventFile.
+.DESCRIPTION
+    Clear a NTLogEventFile.
+.EXAMPLE
+    Clear-NTEventLogFile -LogFileName Dienststeuerung
+#>
 function Clear-NTEventLogFile
 {
     [CmdletBinding(DefaultParameterSetName='Default', 
@@ -303,6 +346,17 @@ function Clear-NTEventLogFile
     }
 }
 
+<#
+.Synopsis
+    Register a NTLogEventEventHandler.
+.DESCRIPTION
+    Register a NTLogEventEventHandler for your PowerShell Script.
+    This NTLogEventEventHandler registered all new Events as a PowerShell Event or use your own  Scriptbock.
+.EXAMPLE
+    Register-NTLogEventEventHandler
+.EXAMPLE
+    Register-NTLogEventEventHandler -ScriptBlock { Write-Host "New Event." }
+#>
 function Register-NTLogEventEventHandler
 {
     [CmdletBinding(DefaultParameterSetName='Default', 

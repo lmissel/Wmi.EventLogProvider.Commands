@@ -414,7 +414,7 @@ function Register-NTLogEventEventHandler
                    ParameterSetName='Default')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [ScriptBlock] $ScriptBlock = {(New-Event -SourceIdentifier "Win32_NTLogEvent" -Sender $args[0] EventArguments $Event)}
+        [ScriptBlock] $ScriptBlock = {(New-Event -SourceIdentifier "Win32_NTLogEvent" -Sender $args[0] -EventArguments $Event)}
     )
     
     Begin

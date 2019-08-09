@@ -19,28 +19,32 @@ In diesem Beispiel wird gezeigt und erläutert, wie das Module verwendet werden 
 
 ```powershell
 # Importieren des Moduls
-Import-Module Wmi.EventLogProvider.Commands
+PS C:\Users\lmissel> Import-Module Wmi.EventLogProvider.Commands
 
 # Gebe ein Objekt der Klasse Win32_NTEventLogFile aus.
-Get-NTEventLogFile -LogFileName "Application"
+PS C:\Users\lmissel> Get-NTEventLogFile -LogFileName "Application"
 
 # Gebe ein Objekt der Klasse Win32_NTLogEvent aus.
-Get-NTLogEvent -Filter {Logfile='Application' AND RecordNumber=4}
+PS C:\Users\lmissel> Get-NTLogEvent -Filter {Logfile='Application' AND RecordNumber=4}
 
 # Sichere ein NTEventLogFile.
-Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
+PS C:\Users\lmissel> Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
 
 # PowerShell Events erzeugen, wenn ein neues NTLogEvent erzeugt wird.
-Register-NTLogEventEventHandler
+PS C:\Users\lmissel> Register-NTLogEventEventHandler
 
-CommandType     Name                                               Version    Source                                                                                                                                                                                           
------------     ----                                               -------    ------                                                                
-Function        Backup-NTEventLogFile                              0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
-Function        Clear-NTEventLogFile                               0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
-Function        Get-NTEventLogFile                                 0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
-Function        Get-NTEventLogFileSources                          0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
-Function        Get-NTLogEvent                                     0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
-Function        Register-NTLogEventEventHandler                    0.0        Wmi.EventLogProvider.Commands 
+# Gebe alle Funktionen aus...
+PS C:\Users\lmissel> Get-Command -Module Wmi.EventLogProvider.Commands
+
+CommandType     Name                                               Version    Source 
+-----------     ----                                               -------    ------
+Function        Backup-NTEventLogFile                              0.0        Wmi.EventLogProvider.Commands
+Function        Clear-NTEventLogFile                               0.0        Wmi.EventLogProvider.Commands
+Function        Get-NTEventLogFile                                 0.0        Wmi.EventLogProvider.Commands
+Function        Get-NTEventLogFileSources                          0.0        Wmi.EventLogProvider.Commands
+Function        Get-NTLogEvent                                     0.0        Wmi.EventLogProvider.Commands
+Function        Register-NTLogEventEventHandler                    0.0        Wmi.EventLogProvider.Commands
 ```
+
 ## Hinweis
 Dieses PowerShell Module wurde bewusst klein gehalten. Sollten Sie weitere Funktionen benötigen, steht das PowerShell Module **System.Diagnostics.Commands** oder das **System.Diagnostics.Eventing.Reader.Commands** in den jeweiligen Repositories zur Verfügung.

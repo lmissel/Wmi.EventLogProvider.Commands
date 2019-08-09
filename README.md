@@ -32,6 +32,15 @@ Backup-NTEventLogFile -LogFileName Application -destination "C:\Backup\"
 
 # PowerShell Events erzeugen, wenn ein neues NTLogEvent erzeugt wird.
 Register-NTLogEventEventHandler
+
+CommandType     Name                                               Version    Source                                                                                                                                                                                           
+-----------     ----                                               -------    ------                                                                
+Function        Backup-NTEventLogFile                              0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
+Function        Clear-NTEventLogFile                               0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
+Function        Get-NTEventLogFile                                 0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
+Function        Get-NTEventLogFileSources                          0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
+Function        Get-NTLogEvent                                     0.0        Wmi.EventLogProvider.Commands                                                                                                                                                                    
+Function        Register-NTLogEventEventHandler                    0.0        Wmi.EventLogProvider.Commands 
 ```
 ## Hinweis
 Dieses PowerShell Module wurde bewusst klein gehalten. Sollten Sie weitere Funktionen benötigen, steht das PowerShell Module **System.Diagnostics.Commands** oder das **System.Diagnostics.Eventing.Reader.Commands** in den jeweiligen Repositories zur Verfügung.

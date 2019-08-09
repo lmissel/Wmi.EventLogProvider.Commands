@@ -32,6 +32,7 @@ PS C:\Users\lmissel> Backup-NTEventLogFile -LogFileName Application -destination
 
 # PowerShell Events erzeugen, wenn ein neues NTLogEvent erzeugt wird.
 PS C:\Users\lmissel> Register-NTLogEventEventHandler
+PS C:\Users\lmissel> Wait-Event -SourceIdentifier Win32_NTLogEvent
 
 # Gebe alle Funktionen aus...
 PS C:\Users\lmissel> Get-Command -Module Wmi.EventLogProvider.Commands
